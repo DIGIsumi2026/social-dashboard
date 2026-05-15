@@ -9,7 +9,7 @@ export default function UserManagement({ onActivity }) {
   const [toast, setToast] = useState(null);
   const [formData, setFormData] = useState({ id: null, name: '', email: '', role: 'user', password: '' });
 
-  //components loads- fetch data
+  //components loads-fetch data
   useEffect(() => {
     fetchUsers();
   }, []);

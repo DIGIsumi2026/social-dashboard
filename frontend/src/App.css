@@ -82,14 +82,34 @@ body, .app-container, .sidebar, .main-content, .header, .stat-card, .filter-bar,
 .loading-overlay {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-color: rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(5px); 
+  background-color: rgba(15, 23, 42, 0.4); 
+  backdrop-filter: none !important; 
+  z-index: 10; 
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 50;
-  border-radius: var(--radius-card);
-  animation: fadeIn 0.2s ease;
+  border-radius: 16px;
+}
+
+/* trassnmission effct */
+.social-toggle-btn {
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/*press down effect when clicked*/
+.social-toggle-btn:active {
+  transform: scale(0.92);
+}
+
+/*spring pop when a platform becomes active */
+.social-toggle-btn.active-platform {
+  animation: popIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.95); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
 }
 
 .spinner {
@@ -106,7 +126,7 @@ body, .app-container, .sidebar, .main-content, .header, .stat-card, .filter-bar,
   100% { transform: rotate(360deg); } 
 }
 
-/* sidebar Text in Dark Mode */
+/* sidebar Text in dark mode */
 body[data-theme='dark'] .nav-item span,
 .dark-mode .nav-item span {
   color: #E2E8F0; 
@@ -120,7 +140,6 @@ body[data-theme='dark'] .nav-item.active span,
 }
 
 /* side bar logo and header styles */
-
 .sidebar-header {
   display: flex;
   align-items: center;
