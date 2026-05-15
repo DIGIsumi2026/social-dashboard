@@ -1,0 +1,40 @@
+# =========================================
+# 1. SECRETS (CRITICAL: NEVER COMMIT THESE)
+# =========================================
+.env
+.env.local
+.env.development
+.env.production
+*.pem
+
+# =========================================
+# 2. DEPENDENCIES (HUGE FOLDERS)
+# =========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================================
+# 3. FRONTEND BUILD OUTPUTS
+# =========================================
+frontend/dist/
+frontend/build/
+frontend/.eslintcache
+
+# =========================================
+# 4. OS JUNK FILES (Windows/Mac clutter)
+# =========================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================================
+# 5. BACKEND LOGS & MISC
+# =========================================
+logs/
+*.log
+pids/
+*.pid
+*.seed
+coverage/
