@@ -5,7 +5,23 @@ require('dotenv').config();
 const app = express();
 
 //middleware
-app.use(cors());
+// 1. DYNAMIC CORS CONFIGURATION
+const allowedOrigins = [
+  'http://localhost:3000',     // local React app 
+  'http://localhost:5173',     // Your local React app
+  'https://YOUR-FRONTEND-URL.vercel.app' // later update with URL
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+}));
 app.use(express.json({ limit: '10mb' }));
 
 //existing upload routes

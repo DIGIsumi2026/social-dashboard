@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_BASE_URL from './config';
 import axios from 'axios';
 import { format } from 'date-fns'; 
 import { X, PlayCircle, PauseCircle, ChevronLeft, ChevronRight, Play, Lightbulb } from 'lucide-react'; 
@@ -55,9 +56,9 @@ export default function UserApp({ onLogout }) {
       const end = format(dateRange[0].endDate, 'yyyy-MM-dd');
       const queryParams = `?company=${selectedCompany}&platform=${selectedPlatform}&startDate=${start}&endDate=${end}`;
       
-      const totalsRes = await axios.get(`http://localhost:5000/api/upload/totals${queryParams}`);
-      const chartsRes = await axios.get(`http://localhost:5000/api/upload/charts${queryParams}`);
-      const pieRes = await axios.get(`http://localhost:5000/api/upload/pie${queryParams}`); 
+      const totalsRes = await axios.get(`${API_BASE_URL}/upload/totals${queryParams}`);
+      const chartsRes = await axios.get(`${API_BASE_URL}/upload/charts${queryParams}`);
+      const pieRes = await axios.get(`${API_BASE_URL}/upload/pie${queryParams}`);
       
       setDashboardData({
         views: parseInt(totalsRes.data.total_views) || 0,
