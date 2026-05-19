@@ -1,18 +1,15 @@
 import React from 'react';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Brush } from 'recharts';
 
-// --- THE iOS-STYLE CIRCULAR DRAG KNOBS ---
 const IOSTraveller = (props) => {
   const { x, y, width, height, color } = props;
   const centerY = height / 2;
 
   return (
     <g transform={`translate(${x}, ${y})`} style={{ cursor: 'ew-resize', outline: 'none' }}>
-      {/* Invisible enlarged hit area so it's easy to grab with a mouse */}
       <rect x={-10} y={-15} width={width + 20} height={height + 30} fill="transparent" />
       
-      {/* The crisp white circular knob with a drop shadow */}
-      <circle 
+            <circle 
         cx={width / 2} 
         cy={centerY} 
         r={10} 
@@ -21,9 +18,7 @@ const IOSTraveller = (props) => {
         strokeWidth={1}
         style={{ filter: 'drop-shadow(0px 2px 4px rgba(0,0,0,0.25))' }}
       />
-      
-      {/* The tiny colored dot in the center to match the graph's brand color */}
-      <circle 
+            <circle 
         cx={width / 2} 
         cy={centerY} 
         r={3.5} 
@@ -48,12 +43,11 @@ const SingleChart = ({ data, dataKey, color, title, type = 'area' }) => (
       {title}
     </h3>
     
-    {/* INCREASED CONTAINER HEIGHT to 340px to accommodate the new gap */}
     <div style={{ width: '100%', height: '340px', minHeight: '340px', flexGrow: 1 }}>
       <ResponsiveContainer width="100%" height="100%" minHeight={340}>
         
         {type === 'bar' ? (
-          /* INCREASED BOTTOM MARGIN to 30 to create the gap */
+          
           <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 30 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-color)" opacity={0.5} />
             <XAxis dataKey="week" stroke="var(--text-secondary)" fontSize={12} tickLine={false} axisLine={false} dy={10} />
@@ -74,7 +68,6 @@ const SingleChart = ({ data, dataKey, color, title, type = 'area' }) => (
           </BarChart>
 
         ) : (
-          /* INCREASED BOTTOM MARGIN to 30 to create the gap */
           <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 30 }}>
             <defs>
               <linearGradient id={`color_${dataKey}`} x1="0" y1="0" x2="0" y2="1">
