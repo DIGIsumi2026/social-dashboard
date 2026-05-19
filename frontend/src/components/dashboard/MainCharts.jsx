@@ -1,8 +1,40 @@
 import React from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Brush } from 'recharts';
 
-//reusable component fot mini charts 
-const SingleChart = ({ data, dataKey, color, title }) => (
+// --- THE iOS-STYLE CIRCULAR DRAG KNOBS ---
+const IOSTraveller = (props) => {
+  const { x, y, width, height, color } = props;
+  const centerY = height / 2;
+
+  return (
+    <g transform={`translate(${x}, ${y})`} style={{ cursor: 'ew-resize', outline: 'none' }}>
+      {/* Invisible enlarged hit area so it's easy to grab with a mouse */}
+      <rect x={-10} y={-15} width={width + 20} height={height + 30} fill="transparent" />
+      
+      {/* The crisp white circular knob with a drop shadow */}
+      <circle 
+        cx={width / 2} 
+        cy={centerY} 
+        r={10} 
+        fill="#ffffff" 
+        stroke="rgba(0,0,0,0.1)"
+        strokeWidth={1}
+        style={{ filter: 'drop-shadow(0px 2px 4px rgba(0,0,0,0.25))' }}
+      />
+      
+      {/* The tiny colored dot in the center to match the graph's brand color */}
+      <circle 
+        cx={width / 2} 
+        cy={centerY} 
+        r={3.5} 
+        fill={color} 
+      />
+    </g>
+  );
+};
+
+// reusable component for mini charts
+const SingleChart = ({ data, dataKey, color, title, type = 'area' }) => (
   <div style={{ 
     backgroundColor: 'var(--bg-card)', 
     padding: '20px', 
@@ -16,21 +48,57 @@ const SingleChart = ({ data, dataKey, color, title }) => (
       {title}
     </h3>
     
-    <div style={{ width: '100%', height: '220px', flexGrow: 1 }}>
-      <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-          <defs>
-            <linearGradient id={`color_${dataKey}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor={color} stopOpacity={0.3}/>
-              <stop offset="95%" stopColor={color} stopOpacity={0}/>
-            </linearGradient>
-          </defs>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-color)" opacity={0.5} />
-          <XAxis dataKey="week" stroke="var(--text-secondary)" fontSize={12} tickLine={false} axisLine={false} dy={10} />
-          <YAxis stroke="var(--text-secondary)" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value} />
-          <Tooltip contentStyle={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)', borderRadius: '8px', color: 'var(--text-primary)', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }} itemStyle={{ color: 'var(--text-primary)', fontWeight: 'bold' }} />
-          <Area type="monotone" dataKey={dataKey} stroke={color} strokeWidth={3} fillOpacity={1} fill={`url(#color_${dataKey})`} />
-        </AreaChart>
+    {/* INCREASED CONTAINER HEIGHT to 340px to accommodate the new gap */}
+    <div style={{ width: '100%', height: '340px', minHeight: '340px', flexGrow: 1 }}>
+      <ResponsiveContainer width="100%" height="100%" minHeight={340}>
+        
+        {type === 'bar' ? (
+          /* INCREASED BOTTOM MARGIN to 30 to create the gap */
+          <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 30 }}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-color)" opacity={0.5} />
+            <XAxis dataKey="week" stroke="var(--text-secondary)" fontSize={12} tickLine={false} axisLine={false} dy={10} />
+            <YAxis stroke="var(--text-secondary)" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value} />
+            <Tooltip cursor={{ fill: 'rgba(0,0,0,0.05)' }} contentStyle={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)', borderRadius: '8px', color: 'var(--text-primary)', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }} itemStyle={{ color: 'var(--text-primary)', fontWeight: 'bold' }} />
+            
+            <Bar dataKey={dataKey} fill={color} radius={[4, 4, 0, 0]} maxBarSize={40} />
+            
+            <Brush 
+              dataKey="week" 
+              height={10}               
+              stroke="transparent"      
+              fill="rgba(0,0,0,0.06)"   
+              tickFormatter={() => ''} 
+              travellerWidth={16}
+              traveller={(props) => <IOSTraveller {...props} color={color} />}
+            />
+          </BarChart>
+
+        ) : (
+          /* INCREASED BOTTOM MARGIN to 30 to create the gap */
+          <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 30 }}>
+            <defs>
+              <linearGradient id={`color_${dataKey}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={color} stopOpacity={0.3}/>
+                <stop offset="95%" stopColor={color} stopOpacity={0}/>
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-color)" opacity={0.5} />
+            <XAxis dataKey="week" stroke="var(--text-secondary)" fontSize={12} tickLine={false} axisLine={false} dy={10} />
+            <YAxis stroke="var(--text-secondary)" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value} />
+            <Tooltip contentStyle={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)', borderRadius: '8px', color: 'var(--text-primary)', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }} itemStyle={{ color: 'var(--text-primary)', fontWeight: 'bold' }} />
+            <Area type="monotone" dataKey={dataKey} stroke={color} strokeWidth={3} fillOpacity={1} fill={`url(#color_${dataKey})`} />
+            
+            <Brush 
+              dataKey="week" 
+              height={10}               
+              stroke="transparent"      
+              fill="rgba(0,0,0,0.06)"   
+              tickFormatter={() => ''} 
+              travellerWidth={16}
+              traveller={(props) => <IOSTraveller {...props} color={color} />}
+            />
+          </AreaChart>
+        )}
       </ResponsiveContainer>
     </div>
   </div>
@@ -48,9 +116,10 @@ export default function MainCharts({ chartData }) {
 
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px', marginBottom: '25px' }}>
-      <SingleChart data={chartData} dataKey="followers" color="#EC4899" title="Follower Growth" />
-      <SingleChart data={chartData} dataKey="likes" color="#10B981" title="Interactions & Likes" />
-      <SingleChart data={chartData} dataKey="comments" color="#8B5CF6" title="Profile Visits" />
+
+      <SingleChart data={chartData} dataKey="followers" color="#EC4899" title="Follower Growth" type="area" />
+      <SingleChart data={chartData} dataKey="likes" color="#10B981" title="Interactions & Likes" type="bar" />
+      <SingleChart data={chartData} dataKey="comments" color="#8B5CF6" title="Profile Visits" type="bar" />
     </div>
   );
 }
